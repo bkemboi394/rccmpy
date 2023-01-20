@@ -22,7 +22,7 @@ VERSION = '0.1.0'
 
 # Other required third party packages
 REQUIRED = [
-    'numpy', 'math', 'random', 'scipy'
+    'numpy', 'scipy'
 ]
 
 # optional packages
