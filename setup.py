@@ -18,7 +18,7 @@ URL = 'https://github.com/bkemboi394/rccmpy'
 EMAIL = 'kemboib@mail.gvsu.edu'
 AUTHOR = 'Beatrice Kemboi'
 REQUIRES_PYTHON = '>=3.9.0'
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 
 # Other required third party packages
 REQUIRED = [
