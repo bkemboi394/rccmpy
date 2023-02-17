@@ -12,7 +12,7 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
 # Package meta-data.
-NAME = 'rccm'
+NAME = 'rccmpy'
 DESCRIPTION = 'A library for building a Random Covariance Clustering Model.'
 URL = 'https://github.com/bkemboi394/rccmpy'
 EMAIL = 'kemboib@mail.gvsu.edu'
