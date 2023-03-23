@@ -129,25 +129,6 @@ def randCalc(x,y):
         
        
 
-
-
-# G,clustSize,p,n, overlap = 2,(67,37),10,177,0.5
-# rho,esd, gtype, eprob = 0.10,0.05,"hub",0.5
-
-
-# sim = rccSim(G,clustSize,p,n,overlap,rho,esd,gtype,eprob)
-
-# x = sim["simDat"]
-# g0s = sim["g0s"]
-# omega0s = sim["Omega0s"]
-# gks = sim["gks"]
-# omegaks = sim["Omegaks"]
-
-# ws = np.random.randint(2,size=(K,G))
-
-# lambda2 = 135
-
-
 def rccmLogLike(omegaks,omega0s,x,ws,lambda2):
     """
    Model Log-Likelihood:
@@ -232,10 +213,10 @@ def aic(omegaks, omega0s, ws, x, lambda2):
        
     # Generate data
     set.seed(1994)
-    myData <- rccSim(G = 2, clustSize = 10, p = 10, n = 100, overlap = 0.50, rho = 0.10)
+    myData = rccSim(G = 2, clustSize = 10, p = 10, n = 100, overlap = 0.50, rho = 0.10)
     
     # Analyze with RCCM
-    resultRccm <- rccm(x = myData['simDat'], lambda1 = 20,
+    resultRccm = rccm(x = myData['simDat'], lambda1 = 20,
                    lambda2 = 325, lambda3 = 0.01, nclusts = 2)
 
    # Calculate AIC
