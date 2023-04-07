@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
-import spcov
-from sklearn.covariance import graph_lasso,GraphicalLasso
-from scipy.cluster.hierarchy import linkage, fcluster
-from scipy.spatial.distance import squareform
 
 """
 Random Covariance Clustering Model
@@ -51,6 +46,12 @@ result = rccm(x=myData['simDat'], lambda1=10, lambda2=50, lambda3=2, nclusts=2, 
 """
 
 
+import numpy as np
+import sklearn
+from sklearn.covariance import GraphicalLasso
+from scipy.cluster.hierarchy import linkage, fcluster
+from scipy.spatial.distance import squareform
+
 def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z0s=None, ncores=1):
         
    # Function for making almost symmetric matrix symmetric
@@ -66,9 +67,9 @@ def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z
     # Initializing subject-level matrices
     Omegas = []
     for k in range(K):
-        pdStart = Sl[k, :, :] + np.eye(p) * 1e-6
+        pdStart = Sl[k] + np.eye(p) * 1e-6
         gl = GraphicalLasso(alpha=0.001, mode='cd', tol=1e-4, verbose=False, 
-                            enet_tol=1e-4, max_iter=100, warm_start=True)
+                            enet_tol=1e-4, max_iter=100) #warm_start=True)
         gl.fit(pdStart)
         Omegas.append(make_symmetric(gl.precision_))
         
@@ -108,6 +109,11 @@ def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z
     wArray = np.full((max_iters + 1, G, K), np.nan)
     wArray[0,:, :] = wgk
     
+    
+    
+    
+    
+    
     #Start BCD Algorithm
     while max(abs(Omega0 - Omega0.old)) > delta or max(abs(Omegas - Omegas.old)) > delta or counter < 1:
         counter += 1
@@ -129,23 +135,41 @@ def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z
         # 2nd step: updating cluster-level precision matrices
 
          # Calculating weighted-sum of subject-level matrices
-        inv0 = np.zeros((G,p, p))
         
-        s0 = np.array([np.sum([wgk[g,k] * Omegas[k,:, :] for k in range(K)], axis=0) for g in range(G)])
+        # Calculating weighted-sum of subject-level matrices
+        inv0 = np.zeros((G,p, p))
+        s0 = np.zeros((G,p, p))
         
         for g in range(G):
-                    S0 = s0[g,:, :] / np.sum(wgk[g, :])
-                    penMat = np.full((p, p), lambda3 / (lambda2 * np.sum(wgk[g, :])))
-                    np.fill_diagonal(penMat, 0)
-                    if counter > 1:
-                        Omega0[g,:, :] = spcov.spcov(Sigma=Omega0[g,:, :], S=S0, lambd=penMat,\
-                                                      tol_outer=delta, step_size=100)['Sigma']
-                    else:
-                        Omega0[g,:, :] = spcov.spcov(Sigma=np.linalg.inv(S0), S=S0, lambd=penMat,\
-                                                      tol_outer=delta, step_size=100)['Sigma']
+            s0[g, :, :] = np.sum([wgk[g,k] * Omegas[k,:,:] for k in range(K)], axis=0) / np.sum(wgk[g,:])
+            penMat = np.full((p, p), lambda3 / (lambda2 * np.sum(wgk[g,:])))
+            np.fill_diagonal(penMat, 0)
+            if counter > 1:
+                L = np.linalg.cholesky(s0[g, :, :])
+                s0_inv = np.linalg.solve(L.T, np.linalg.solve(L, np.eye(p)))
+                Omega0[g, :, :] = s0_inv - np.diag(np.diag(s0_inv)) + penMat / lambda2
+            else:
+                Omega0[g, :, :] = np.linalg.inv(s0[g, :, :])
+            inv0[g, :, :] = np.linalg.inv(Omega0[g, :, :])
+
+        # inv0 = np.zeros((G,p, p))
+        
+        # s0 = np.array([np.sum([wgk[g,k] * Omegas[k,:, :] for k in range(K)], axis=0) for g in range(G)])
+        
+        
+        # for g in range(G):
+        #             S0 = s0[g,:, :] / np.sum(wgk[g, :])
+        #             penMat = np.full((p, p), lambda3 / (lambda2 * np.sum(wgk[g, :])))
+        #             np.fill_diagonal(penMat, 0)
+        #             if counter > 1:
+        #                 Omega0[g,:, :] = spcov.spcov(Sigma=Omega0[g,:, :], S=S0, lambd=penMat,\
+        #                                               tol_outer=delta, step_size=100)['Sigma']
+        #             else:
+        #                 Omega0[g,:, :] = spcov.spcov(Sigma=np.linalg.inv(S0), S=S0, lambd=penMat,\
+        #                                               tol_outer=delta, step_size=100)['Sigma']
                             
-                    # Calculating inverse of Omega_g for Omega_k and w_gk updates
-                    inv0[g,:,:] = np.linalg.inv(Omega0[g,:,:])
+        #             # Calculating inverse of Omega_g for Omega_k and w_gk updates
+        #             inv0[g,:,:] = np.linalg.inv(Omega0[g,:,:])
                     
          # 2b step: updating weights
 
@@ -167,7 +191,7 @@ def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z
         
         for k in range(K):
                     np.fill_diagonal(rhoMat[k,:, :], 0)
-                    Omegas[k, :, :] = graph_lasso(sk[k, :, :], alpha=rhoMat[k, :, :], mode='cd')[1]
+                    Omegas[k, :, :] = sklearn.covariance.graph_lasso(sk[k, :, :], alpha=rhoMat[k, :, :], mode='cd')[1]
                     Omegas[k, :, :] = (Omegas[k, :, :] + Omegas[k, :, :].T) / 2.0
         # 4th step: updating weights
 
@@ -193,9 +217,6 @@ def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z
     return res
 
 
-    
-    
-    
     
     
     
