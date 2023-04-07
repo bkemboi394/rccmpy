@@ -272,7 +272,7 @@ def rccSim(G, clustSize, p, n, overlap, rho, esd, graphtype, eprob):
     
     
 
-    results = {"simDat": simData, "g0s": g0s, "Omega0s": Omega0s, "Omegaks": Omegaks, "zgks": zgks}
+    results = {"simDat": simData, "g0s": g0s, "Omega0s": Omega0s, "Omegaks": Omegaks, "zgks": Zgks}
 
     return results
 
