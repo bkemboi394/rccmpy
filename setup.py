@@ -9,7 +9,7 @@ URL = 'https://github.com/bkemboi394/rccmpy'
 EMAIL = 'kemboib@mail.gvsu.edu'
 AUTHOR = 'Beatrice Kemboi'
 REQUIRES_PYTHON = '>=3.9.0'
-VERSION = '0.1.1'
+VERSION = '0.1.2'
 
 
 with open("README.md", "r", encoding="utf-8") as fh:
