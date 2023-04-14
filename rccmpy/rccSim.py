@@ -54,9 +54,9 @@ Probability of two nodes having an edge between them. Only applicable if type = 
 Returns:
 A dictionary containing:
 simDat: list of K multivariate-Gaussian data sets each of dimension n_k x p.
-g0s: p x p x G array of G number of cluster-level networks.
-Omega0s: p x p x G array of G number of cluster-level precision matrices.
-Omegaks: p x p x K array of K number of subject-level precision matrices.
+g0s: G x p x p array of G number of cluster-level networks.
+Omega0s: G x p x p array of G number of cluster-level precision matrices.
+Omegaks: K x p x p array of K number of subject-level precision matrices.
 zgks: vector of length K containing cluster memberships for each subject.
 
 
@@ -82,7 +82,7 @@ import math
 # Change the variable values to desired
 
 G, clustSize, p, n, overlap = 2, (67, 37), 10, 177, 0.5
-rho, esd, gtype, eprob = 0.10, 0.05, "hub", 0.5
+rho, esd, graphtype, eprob = 0.10, 0.05, "hub", 0.5
 
 
 def rccSim(G, clustSize, p, n, overlap, rho, esd, graphtype, eprob):
@@ -104,10 +104,9 @@ def rccSim(G, clustSize, p, n, overlap, rho, esd, graphtype, eprob):
         raise ValueError("clustSize must be of length 1 or of length equal to the number of clusters")
 
     else:
-        
+        Zgks = []
         if (len(clustSize) > 1):
 
-            Zgks = []
             for g in range(len(clustSize)):
                 zgks = list(np.repeat(g + 1, clustSize[g]))
                 Zgks.extend(zgks)
@@ -116,6 +115,7 @@ def rccSim(G, clustSize, p, n, overlap, rho, esd, graphtype, eprob):
         else:
             for i in range(G):
                 zgks.repeat(1 + G, clustSize[0])
+                Zgks.extend(zgks)
     
     simData = list()
 
