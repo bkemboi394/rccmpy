@@ -136,14 +136,11 @@ def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z
         
         # Calculating weighted-sum of subject-level matrices
         inv0 = np.zeros((G,p, p))
-        s0 = np.zeros((G,p, p))
         for g in range(G):
             wks = np.array([wgk[g, k] * Omegas[k,:, :] for k in range(K)])
-            s0[g,:, :] = np.sum(wks, axis=0)
-        
-        for g in range(G):
+            s0 = np.sum(wks, axis=0)
             
-            s0 = s0[g,:, :] / np.sum(wgk[g, :])
+            s0 = s0/ np.sum(wgk[g, :])
             penMat = np.full((p, p), lambda3 / (lambda2 * np.sum(wgk[g, :])))
             np.fill_diagonal(penMat, 0)
             
