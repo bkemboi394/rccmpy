@@ -4,8 +4,7 @@
 import numpy as np
 import math
 from scipy import stats
-from rccSim import rccSim
-from rccm import rccm
+
 
 
 # p=10
@@ -248,17 +247,17 @@ def aic(omegaks, omega0s, ws, x, lambda2):
     
   # Generate data
 
-myData = rccSim(G = 2, clustSize = (10,12), p = 10, n = 100, overlap = 0.50, rho = 0.10, esd=0.05, graphtype='hub', eprob=0.5)
+# myData = rccSim(G = 2, clustSize = (10,12), p = 10, n = 100, overlap = 0.50, rho = 0.10, esd=0.05, graphtype='hub', eprob=0.5)
  
-  # Analyze with RCCM
-resultRccm = rccm(x = myData['simDat'], lambda1 = 20,
-                lambda2 = 325, lambda3 = 0.01, nclusts = 2)
+#   # Analyze with RCCM
+# resultRccm = rccm(x = myData['simDat'], lambda1 = 20,
+#                 lambda2 = 325, lambda3 = 0.01, nclusts = 2)
 
-# Calculate AIC
-A = aic(omegaks = resultRccm['Omegas'], omega0s = resultRccm['Omega0'],
-        ws = resultRccm['weights'], x = myData['simDat'], lambda2 = 325)
+# # Calculate AIC
+# A = aic(omegaks = resultRccm['Omegas'], omega0s = resultRccm['Omega0'],
+#         ws = resultRccm['weights'], x = myData['simDat'], lambda2 = 325)
 
-print(A)
+# print(A)
     
     
     
