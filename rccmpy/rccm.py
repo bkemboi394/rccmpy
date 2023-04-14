@@ -155,11 +155,7 @@ def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z
                 Omega0[g, :, :] = np.linalg.inv(s0[g, :, :])
             inv0[g, :, :] = np.linalg.inv(Omega0[g, :, :])
 
-        # inv0 = np.zeros((G,p, p))
-        
-        # s0 = np.array([np.sum([wgk[g,k] * Omegas[k,:, :] for k in range(K)], axis=0) for g in range(G)])
-        
-        
+       
         # for g in range(G):
         #             S0 = s0[g,:, :] / np.sum(wgk[g, :])
         #             penMat = np.full((p, p), lambda3 / (lambda2 * np.sum(wgk[g, :])))
