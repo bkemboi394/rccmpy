@@ -50,7 +50,6 @@ import numpy as np
 from sklearn.covariance import GraphicalLasso
 from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.spatial.distance import squareform
-import glasso
 
 def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z0s=None, ncores=1):
         
