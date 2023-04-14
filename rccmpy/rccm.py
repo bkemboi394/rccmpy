@@ -67,8 +67,8 @@ def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z
     Omegas = []
     for k in range(K):
         pdStart = Sl[k,:,:] + np.diag(np.repeat(1e-6, p))
-        gl = GraphicalLasso(alpha=0.001, mode='cd', tol=1e-4, verbose=False, 
-                            enet_tol=1e-4, max_iter=100)#warm_start=True)
+        gl = GraphicalLasso(alpha=0.001, mode='cd', tol=7.16e-07, verbose=False, 
+                            enet_tol=7.16e-07, max_iter=100)#warm_start=True)
         gl.fit(pdStart)
         Omegas.append(make_symmetric(gl.precision_))
     Omegas = np.array(Omegas)
