@@ -148,11 +148,11 @@ def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z
             np.fill_diagonal(penMat, 0)
             
             if counter > 1:
-                L = np.linalg.cholesky(s0[g, :, :])
+                L = np.linalg.cholesky(s0)
                 s0_inv = np.linalg.solve(L.T, np.linalg.solve(L, np.eye(p)))
                 Omega0[g, :, :] = s0_inv - np.diag(np.diag(s0_inv)) + penMat / lambda2
             else:
-                Omega0[g, :, :] = np.linalg.inv(s0[g, :, :])
+                Omega0[g, :, :] = np.linalg.inv(s0)
             inv0[g, :, :] = np.linalg.inv(Omega0[g, :, :])
 
        
