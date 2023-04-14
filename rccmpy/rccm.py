@@ -114,7 +114,8 @@ def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z
     
     
     #Start BCD Algorithm
-    while max(abs(Omega0 - Omega0_old)) > delta or max(abs(Omegas - Omegas_old)) > delta or counter < 1:
+    while (max(abs(Omega0 - Omega0_old)) > delta).any() or (max(abs(Omegas - Omegas_old)) > delta).any() or counter < 1:
+
         counter += 1
         
         # Exit if exceeds max.iters
