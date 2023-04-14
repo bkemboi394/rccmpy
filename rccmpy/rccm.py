@@ -48,7 +48,7 @@ result = rccm(x=myData['simDat'], lambda1=10, lambda2=50, lambda3=2, nclusts=2, 
 
 import numpy as np
 import sklearn
-from sklearn.covariance import GraphicalLasso
+from sklearn.covariance import GraphicalLassoCV
 from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.spatial.distance import squareform
 
@@ -65,14 +65,14 @@ def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z
     nks = [i.shape[0] for i in x]
     
     # Initializing subject-level matrices
-    Omegas = []
     for k in range(K):
         pdStart = Sl[k,:,:] + np.diag(np.repeat(1e-6, p))
-        gl = GraphicalLasso(alpha=0.001, mode='cd', tol=1e-4, verbose=False, 
-                            enet_tol=1e-4, max_iter=100,warm_start=True)
-        gl.fit(pdStart)
-        Omegas.append(make_symmetric(gl.precision_))
-        
+        # gl = GraphicalLasso(alpha=0.001, mode='cd', tol=1e-4, verbose=False, 
+        #                     enet_tol=1e-4, max_iter=100,warm_start=True)
+        # gl.fit(pdStart)
+        # Omegas.append(make_symmetric(gl.precision_))
+        Omegas = make_symmetric(GraphicalLassoCV(cv=5, tol=1e-4, max_iter=100, mode='cd', warm_start=True,\
+                                             assume_centered=False).fit(Sl).precision_)
     
     
     # Initializing weights using hierarchical clustering based on dissimilarity matrix of
