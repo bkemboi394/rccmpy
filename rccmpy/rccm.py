@@ -47,7 +47,6 @@ result = rccm(x=myData['simDat'], lambda1=10, lambda2=50, lambda3=2, nclusts=2, 
 
 
 import numpy as np
-import sklearn
 from sklearn.covariance import GraphicalLasso
 from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.spatial.distance import squareform
