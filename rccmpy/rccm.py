@@ -50,6 +50,7 @@ import numpy as np
 from sklearn.covariance import GraphicalLasso
 from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.spatial.distance import squareform
+import glasso
 
 def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z0s=None, ncores=1):
         
@@ -68,7 +69,7 @@ def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z
     for k in range(K):
         pdStart = Sl[k,:,:] + np.diag(np.repeat(1e-6, p))
         gl = GraphicalLasso(alpha=0.001, mode='cd', tol=1e-4, verbose=False, 
-                            enet_tol=1e-4, assume_centered=True,max_iter=100)#warm_start=True)
+                            enet_tol=1e-4, assume_centered=True,max_iter=500)#warm_start=True)
         gl.fit(pdStart)
         Omegas.append(make_symmetric(gl.precision_))
     Omegas = np.array(Omegas)
