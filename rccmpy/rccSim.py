@@ -240,7 +240,7 @@ def rccSim(G, clustSize, p, n, overlap, rho, esd, graphtype, eprob):
 
                 swaps = np.array(np.tril_indices(p, k=-1)).T[np.random.randint(0, p * (p - 1) // 2,\
                                                                                size=int(np.floor(rho * gks[k,:,:].sum())))]
-                print(len(swaps))
+                
                 for s in range(len(swaps)):
                     gks[k,:,:][swaps[s, 0], swaps[s, 1]] = abs(gks[k,:,:][swaps[s, 0], swaps[s, 1]] - 1)
                 
