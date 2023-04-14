@@ -106,7 +106,7 @@ def rccSim(G, clustSize, p, n, overlap, rho, esd, graphtype, eprob):
     else:
         Zgks = []
         if (len(clustSize) > 1):
-
+            
             for g in range(len(clustSize)):
                 zgks = list(np.repeat(g + 1, clustSize[g]))
                 Zgks.extend(zgks)
@@ -136,7 +136,7 @@ def rccSim(G, clustSize, p, n, overlap, rho, esd, graphtype, eprob):
     # Determining edges to be shared across groups
     numE = p - J
     q = int(math.comb(p, 2))
-    if gtype == "hub":
+    if graphtype == "hub":
         numshare = math.floor(numE * overlap)
     else:
         numshare = math.floor(q * overlap)
@@ -166,7 +166,7 @@ def rccSim(G, clustSize, p, n, overlap, rho, esd, graphtype, eprob):
             g0s[g,:, :] = np.zeros((p, p))
 
             ##hubs
-            if gtype == "hub":
+            if graphtype == "hub":
                 hubs = np.array_split(np.random.permutation(p), J)
                 
 
@@ -176,7 +176,7 @@ def rccSim(G, clustSize, p, n, overlap, rho, esd, graphtype, eprob):
                 
 
 
-            elif gtype == "random":
+            elif graphtype == "random":
                 ##using rows and cols of lower triangular matrix(d=F) to subset g0s
                 rows_l, cols_l = np.tril_indices(p, k=-1)
                 g0s[g,:,:][[rows_l], [cols_l]] = np.random.choice((1, 0), \
