@@ -61,13 +61,13 @@ def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z
     K = len(x)
     G = nclusts
     p = x[0].shape[1]
-    Sl = [np.cov(i, rowvar=False) for i in x]
+    Sl = np.array([np.cov(i, rowvar=False) for i in x])
     nks = [i.shape[0] for i in x]
     
     # Initializing subject-level matrices
     Omegas = []
     for k in range(K):
-        pdStart = Sl[k] + np.eye(p) * 1e-6
+        pdStart = Sl[k,:,:] + np.diag(np.repeat(1e-6, p))
         gl = GraphicalLasso(alpha=0.001, mode='cd', tol=1e-4, verbose=False, 
                             enet_tol=1e-4, max_iter=100,warm_start=True)
         gl.fit(pdStart)
