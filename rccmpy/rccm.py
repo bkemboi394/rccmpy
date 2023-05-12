@@ -155,19 +155,19 @@ def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z
 
 
         for g in range(G):
-            S0 = s0[g,:, :] / np.sum(wgk[g, :])
+            S0 = s0/ np.sum(wgk[g, :])
             if counter > 1:
                 for i in range(p):
                     penVal = lambda3 / (lambda2 * np.sum(wgk[g, :]))
                     model = GraphicalLasso(alpha=penVal, tol=delta, max_iter=100)
-                    model.fit(Omega0[:, :, g][:, [i]], S0[:, [i]])
-                    Omega0[:, i, g] = model.precision_
+                    model.fit(Omega0[g,:, :][:, [i]], S0[:, [i]])
+                    Omega0[g,i,:] = model.precision_
             else:
                 for i in range(p):
                     penVal = lambda3 / (lambda2 * np.sum(wgk[g-1, :]))
                     model = GraphicalLasso(alpha=penVal, tol=delta, max_iter=100)
                     model.fit(np.linalg.inv(S0)[:, [i]], S0[:, [i]])
-                    Omega0[g,:, i] = model.precision_
+                    Omega0[g,i,:] = model.precision_
 
 
             inv0[g, :, :] = np.linalg.inv(Omega0[g, :, :])
