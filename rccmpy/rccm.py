@@ -140,17 +140,34 @@ def rccm(x,  nclusts, lambda1, lambda2, lambda3=0, delta=0.001, max_iters=100, z
             wks = np.array([wgk[g, k] * Omegas[k,:, :] for k in range(K)])
             s0 = np.sum(wks, axis=0)
             
-            s0 = s0/ np.sum(wgk[g, :])
-            penMat = np.full((p, p), lambda3 / (lambda2 * np.sum(wgk[g, :])))
-            np.fill_diagonal(penMat, 0)
+            # s0 = s0/ np.sum(wgk[g, :])
+            # penMat = np.full((p, p), lambda3 / (lambda2 * np.sum(wgk[g, :])))
+            # np.fill_diagonal(penMat, 0)
             
+            # if counter > 1:
+            #     L = np.linalg.cholesky(s0)
+            #     s0_inv = np.linalg.solve(L.T, np.linalg.solve(L, np.eye(p)))
+            #     Omega0[g, :, :] = s0_inv - np.diag(np.diag(s0_inv)) + penMat / lambda2
+            # else:
+            #     Omega0[g, :, :] = np.linalg.inv(s0)
+                
+                
+
+        for g in range(G):
+            S0 = s0[g:, :] / np.sum(wgk[g, :])
+            penMat = np.full((p,p), lambda3 / (lambda2 * np.sum(wgk[g, :])))
+            np.fill_diagonal(penMat, 0)
             if counter > 1:
-                L = np.linalg.cholesky(s0)
-                s0_inv = np.linalg.solve(L.T, np.linalg.solve(L, np.eye(p)))
-                Omega0[g, :, :] = s0_inv - np.diag(np.diag(s0_inv)) + penMat / lambda2
+                model = GraphicalLasso(alpha=penMat, tol=delta, max_iter=100)
+                model.fit(Omega0[g,:, :]@ S0 @ Omega0[g,:, :])
+                Omega0[g,:, :] = model.precision_
             else:
-                Omega0[g, :, :] = np.linalg.inv(s0)
-            inv0[g, :, :] = np.linalg.inv(Omega0[g, :, :])
+                model = GraphicalLasso(alpha=penMat, tol=delta, max_iter=100)
+                model.fit(S0)
+                Omega0[g,:, :] = model.precision_
+
+        inv0[g, :, :] = np.linalg.inv(Omega0[g, :, :])
+            
 
        
         # for g in range(G):
